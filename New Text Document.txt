@@ -1,0 +1,586 @@
+
+8086 CPU has 8 general purpose registers, each register has its own name:
+AX - the accumulator register (divided into AH / AL).
+BX - the base address register (divided into BH / BL).
+CX - the count register (divided into CH / CL).
+DX - the data register (divided into DH / DL).
+SI - source index register.
+DI - destination index register.
+BP - base pointer.
+SP - stack pointer.
+
+lab2
+--------
+xchg ax,bx
+[xchg a,b 	[eta hbe na karon dutai memory variable,at least 1 ta register hote hobe]
+
+then emn korte hbe
+
+mov bl,a
+xchg b,bl
+mov a,bl
+]
+
+
+add ax,bx
+sub
+mul bl	[al diye gun hbe]
+div
+inc ax  [ax++]
+dec bx	[bx--]
+
+a db 5	[variable]
+b equ 40	[constant]
+
+0 er ascii = 30h = 0011 0000
+1	=31h = 0011 0001
+
+A = 41h =0100 0001
+B = 42h =0100 0010
+
+a = 61h = 0110 0001
+b
+
+a-B = 20h
+
+***ascii value display korte hoy
+
+upper to lower
+
+mov ah,1
+int 21h
+
+add al,20h
+mov dl,al
+
+mov ah,2
+int 21h
+
+
+There are total 9 flags in 8086 
+The 6 status flags are:
+
+Sign Flag (S)
+Zero Flag (Z)
+Auxiliary Cary Flag (AC)
+Parity Flag (P)
+Carry Flag (CY)
+Overflow Flag (O) 
+
+jump	()if,else
+-----------
+JL	[jump less <]
+JNL	[jump not less >=]
+JNLE	[jump not less equal 
+JG	[jump greater 
+JGE	[jump greater equal
+JNG	[jump not greater
+JE	[jump equal
+JNE	[jump not equal
+
+JE/JZ	Jump Equal or Jump Zero	ZF
+JNE/JNZ	Jump not Equal or Jump Not Zero	ZF
+JA/JNBE	Jump Above or Jump Not Below/Equal	CF, ZF
+JAE/JNB	Jump Above/Equal or Jump Not Below	CF
+JB/JNAE	Jump Below or Jump Not Above/Equal	CF
+JBE/JNA	Jump Below/Equal or Jump Not Above
+
+
+JMP
+CMP ax,bx	[compare]
+JG L1		[jump if ax greater than bx]
+
+L1:
+
+
+loop
+---------
+mov cx,10	[loop 10 bar cholbe]
+L1:
+mov dl,"k"
+mov ah,2
+int 21h
+
+
+LOOP L1
+
+
+
+
+lab 3
+----------
+logic instruction
+AND
+mov ax,10
+and ax,5 [and operation hoye ans ax e jabe]
+
+ 
+
+OR
+XOR
+NOT
+TEST ar AND same bt test e result store hoy na
+
+case convert
+a=61h =  0110 0001
+	 1101 1111 = 0DFh
+
+A =41h = 0100 0001
+	 0010 0001 =21h
+
+mov ah,1
+int 21h
+
+sub al,20h
+
+and al,0DFh
+
+
+
+
+shift,ROTATE instruction
+
+JC L1	[jc=jump carry ,if carry=1 jump L1]
+JNC
+JZ 
+
+SHL
+mov cl,2
+shl al,cl	[2bit kore shift kore
+	11111100
+cf=1
+
+
+
+SHR
+ROL
+
+rol al,1
+0000 0110
+cf = 0
+
+
+ROR
+RCL
+
+1000 0001
+cf =0 
+rcl al,1	[carry flag er man shoho rotate krbe]
+
+RCR
+
+
+lab4
+----------
+0
+2
+4
+6
+.
+.
+0FC
+0FE
+100h
+
+SP=100H
+
+push source	[push al likha jabe na cz,stack 2byte niye kaj kore]
+pushf	[flag reg er info stack e rakhbo]
+pop destination
+popf
+
+new line
+0DH
+0AH
+
+mov dl,0DH 
+mov ah,2
+int 21h
+
+dx=dh+dl
+ax=ah+al
+
+call function-name
+
+//function create
+main endp
+
+function-name proc
+ret
+function-name endp
+
+end main
+
+; diye comment kore
+
+mul
+--------------
+mul source	[ax/al diye multiply,source kono number hote parbe na ,memory address ba register hte hbe]
+mul bx	[*ax,
+
+bl*al = ax
+bx*ax =dx ax
+
+
+decimal input/ output
+1=31h=0011 0001 = 0000 0001
+3=33h=0011 0011 = 0000 0011
+
+1*10+3=13
+
+div divisor
+
+div bx	[mane dx ax k vag korbe] 
+
+qutionent = ax
+remainder = dx
+div bl 	[mane ax k vag korbe]
+
+
+qutionent = al
+remainder = ah
+
+valu clear er jonno
+xor ds,ds
+
+new line
+MOV dl, 10/0A
+MOV ah, 02h
+INT 21h
+MOV dl, 13/0D
+MOV ah, 02h
+INT 21h
+
+exit:
+    mov AH,4CH
+    int 21h
+
+MOVSB	ES:[DI]<-DS[SI] ;
+	IF (DF=0)
+	{SI=SI+1; DI=DI+1}
+	ELSE
+	{SI=SI-1;DI=DI-1}
+
+
+STD
+This instruction is used to set the Direction Flag to 1 so that SI/DI will automatically decrement when
+one of the string instructions executes.
+
+CLD
+This instruction resets the Direction Flag to 0. SI and DI are automatically incremented when one of the 
+string instructions is executed. 
+
+LODSB
+This instruction copies a byte (word) of string from the location pointed to by SI. The SI value is 
+automatically incremented (depending on the DF value) after each movement by 1 byte (2 bytes) for a
+byte string (word string).
+	AL<-DS:[SI] ;
+	IF (DF=0)
+	SI=SI+1
+	ELSE
+	SI=SI-1
+
+
+The SCASB 
+instruction is used for searching a particular character or set of characters in a string. The data item to be 
+searched should be in AL (for SCASB). The string to be searched should be in memory and pointed by the ES:DI register.
+The direction flag determines the direction of scan.
+Used with the REP prefix to find the first occurrence of a specified byte(word) in a string. 
+repne scasb will scan bytes of a string until the trailing null character is found (end of string)
+REPNE (repeat while not equal)
+
+scasb
+Affect the flags based on the result of AL-ES:[DI] ;
+	IF (DF=0)
+	DI=DI+1
+	ELSE
+	DI=DI-1
+
+
+The NEG
+instruction negates a value by finding 2's complement of its single operand.
+This simply means multiply operand by -1.
+When a positive value is negated the result is negative.
+A negative value will become positive.
+Zero remains zero.
+For example,
+        mov   al, -1   ; Load register
+        neg   al       ; AL now has 1
+
+The jnz 
+(or jne) instruction is a conditional jump that follows a test.
+It jumps to the specified location if the Zero Flag (ZF) is cleared (0).
+
+STOSB
+String input nei,AL to ES:DI e rakhe
+
+	ES:[DI]<-AL ;
+	IF (DF=0)
+	DI=DI+1
+	ELSE
+	DI=DI-1
+
+
+.MODEL SMALL
+ .STACK 100H
+
+ .DATA
+    PROMPT_1  DB  0DH,0AH,"Enter the Lower Case Letter : $"
+    PROMPT_2  DB  0DH,0AH,"The Upper Case Letter is : $"
+
+ .CODE
+   MAIN PROC
+     MOV AX, @DATA                ; initialize DS
+     MOV DS, AX
+
+
+     LEA DX, PROMPT_1             ; load and print PROMPT_1
+     MOV AH, 9
+     INT 21H
+
+     MOV AH, 1                    ; read a letter
+     INT 21H
+
+     MOV BL, AL                   ; save the letter in BL 
+         
+     
+     cmp BL,60h
+     jle L1
+     
+        
+     cmp BL,60h
+     jg L2
+      
+    
+     L1:
+   
+     
+     add al,20h
+     mov dl,al
+    
+     mov ah, 2
+     int 21h 
+    
+     jmp L3   
+     
+     
+     L2:
+     MOV AH, 2                    ; return carriage 
+     MOV DL, 0DH
+     INT 21H
+
+     MOV DL, 0AH                  ; line feed
+     INT 21H
+
+     LEA DX, PROMPT_2             ; load and print PROMPT_2
+     MOV AH, 9
+     INT 21H
+
+     SUB BL, 20H                  ; convert a lower case letter to upper case letter
+
+     MOV AH, 2                    ; print the Upper case letter
+     MOV DL, BL
+     INT 21H   
+     
+     L3:
+
+     MOV AH, 4CH                  ; return control to DOS
+     INT 21H
+   MAIN ENDP 
+ END MAIN
+
+array
+----------------
+.model small    
+  .stack 100h
+  .data  
+  
+    a db 10 dup(?)
+  
+  .code
+  
+  main proc
+    mov ax,@data
+    mov ds,ax
+    
+    lea si,a
+    mov cx,5 
+    
+    
+    L1: 
+    
+    mov ah,1
+    int 21h
+      
+    
+    mov [si],al     
+    add dl,30h
+    add si,1    ;for byte address
+    loop L1  
+     
+     
+    lea si,a
+    mov cx,5
+    
+    L2:
+    mov dl,[si]
+    mov ah,2
+    int 21h
+    add si,1
+    
+    mov dl,0Ah 
+    mov ah,2
+    
+    mov dl,0Dh
+    mov ah,2
+    
+    loop L2
+    
+    mov ah,4ch
+    int 21h
+    
+    main endp
+end main
+  
+;Task-2 Write a program that prompts the user to enter two binary numbers and prints
+;their sum.   
+
+
+.MODEL SMALL
+ .STACK 100H
+
+ .DATA
+   PROMPT_1  DB  0DH,0AH,'Enter the first binary number   : $'
+   PROMPT_2  DB  0DH,0AH,'Enter the second binary number   : $'
+   PROMPT_3  DB  0DH,0AH,'The binary sum is : $' 
+   PROMPT_4  DB  0DH,0AH,'The carry bit : $'
+
+   ILLEGAL   DB  0DH,0AH,'Enter the inputs and try again:$' 
+   ILLEGAL2   DB  0DH,0AH,'Enter binary digit and try again:$'
+
+   
+ .CODE
+   MAIN PROC
+     MOV AX, @DATA                 
+     MOV DS, AX
+
+     JMP START_2                 
+
+     START_1:                     
+       LEA DX, ILLEGAL            
+       MOV AH, 9
+       INT 21H
+
+     START_2:                    
+       XOR BX, BX                 
+
+       LEA DX, PROMPT_1            
+       MOV AH, 9
+       INT 21H
+
+       MOV CX, 8                   
+                        
+
+       LOOP_1: 
+         MOV AH, 1                 
+         INT 21H                  
+
+         CMP AL, 0DH            
+         JNE SKIP_1             
+         
+         CMP CX, 8               
+         JE START_1             
+         JMP EXIT_LOOP_1        
+
+         SKIP_1:               
+           AND AL, 0FH          
+           SHL BL, 1              
+           OR BL, AL             
+       LOOP LOOP_1              
+
+       EXIT_LOOP_1:            
+
+       LEA DX, PROMPT_2          
+       MOV AH, 9
+       INT 21H
+
+       MOV CX, 8                
+       MOV AH, 1                
+
+       LOOP_2:                  
+         INT 21H                 
+
+         CMP AL, 0DH            
+         JNE SKIP_2             
+
+         CMP CX, 8                
+         JE START_2            
+         JMP EXIT_LOOP_2        
+
+         SKIP_2:                
+           AND AL, 0FH           
+           SHL BH, 1              
+           OR BH, AL           
+       LOOP LOOP_2               
+
+       EXIT_LOOP_2:             
+
+       LEA DX, PROMPT_4            
+       MOV AH, 9
+       INT 21H
+
+       ADD BL, BH                 
+       JNC carry0               
+         MOV AH, 2                
+         MOV DL, 31H
+         INT 21H  
+         
+         JMP SKIP
+         
+       
+       carry0:  
+       MOV AH, 2                   
+       MOV DL, 30H
+       INT 21H
+
+       SKIP:                   
+      
+       
+       LEA DX, PROMPT_4         
+       MOV AH, 9
+       INT 21H 
+       
+       MOV CX, 8                
+       MOV AH, 2                 
+
+       LOOP_3:                    
+         SHL BL, 1                
+         JC ONE                  
+         MOV DL, 30H              
+         JMP DISPLAY             
+               
+         ONE:                    
+           MOV DL, 31H          
+
+         DISPLAY:                
+           INT 21H            
+       LOOP LOOP_3               
+
+     MOV AH, 4CH                 
+     INT 21H
+   MAIN ENDP
+ END MAIN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
